@@ -103,7 +103,7 @@ try {
       // generate entry points for the CONTRACT.boilerplate.ts file
       classEntryPoints += `
       ${methodName}(args: ${args}): ${res} {
-        // const { ${argsFields.join(', ')} } = args;
+        ${argsFields.map(field => `// const ${field} = args.${field};`).join('\n')}
 
         // YOUR CODE HERE
 

@@ -47,7 +47,8 @@ import { calculator } from "./proto/calculator";
 
 export class Calculator {
   add(args: calculator.add_arguments): calculator.add_result {
-    // const { x, y } = args;
+    // const x = args.x;
+    // const y = args.y;
 
     // YOUR CODE HERE
 
