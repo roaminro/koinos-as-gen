@@ -4,11 +4,11 @@ import {
   CodeGeneratorResponse,
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import * as fs from "fs";
-import * as assert from "assert";
 import prettier from "prettier";
 import path from "path";
 import crypto from "crypto";
 import { capitalize } from './util';
+import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 
 const input = fs.readFileSync(process.stdin.fd);
 let classTemplate = fs.readFileSync(path.resolve(__dirname, '../templates/contract-class-template.ts'), 'utf8').toString();
@@ -30,18 +30,17 @@ try {
   // there can be only 1 ABI file to generate, 
   // so the first file to generate is always the one used to generate the contract class
   const protoFileName = codeGenRequest.getFileToGenerateList()[0];
-  let protoFileDescriptor;
+  let protoFileDescriptor: FileDescriptorProto | undefined;
 
   // iterate over the proto files to find the one that will be used to generate the contract class
   for (const fileDescriptor of codeGenRequest.getProtoFileList()) {
     const fileDescriptorName = fileDescriptor.getName();
-    assert.ok(fileDescriptorName);
-    if (fileDescriptorName === protoFileName) {
+    if (fileDescriptorName && fileDescriptorName === protoFileName) {
       protoFileDescriptor = fileDescriptor;
     }
   }
 
-  if (!protoFileDescriptor) {
+  if (protoFileDescriptor === undefined) {
     throw new Error(`Could not find a fileDescriptor for ${protoFileName}`);
   }
 
@@ -63,23 +62,59 @@ try {
 
   let classEntryPoints = '';
   let indexEntryPoints = '';
-  protoFileDescriptor.getMessageTypeList().forEach((messageDescriptor) => {
-    const argumentsMessageName = messageDescriptor.getName();
 
+  for (const messageDescriptor of protoFileDescriptor.getMessageTypeList()) {
+    const messageName = messageDescriptor.getName();
+  
     // only parse the messages ending with '_arguments'
-    if (argumentsMessageName?.endsWith('_arguments')) {
+    if (messageName?.endsWith('_arguments')) {
+      const argumentsMessageDescriptor = messageDescriptor;
+      const argumentsMessageName = messageName;
       const methodName = argumentsMessageName.replace('_arguments', '');
       const resultMessageName = `${methodName}_result`;
+
+      // get the '_result' message
+      // @ts-ignore: protoFileDescriptor cannot be undefined here
+      const resultMessageDescriptor = protoFileDescriptor.getMessageTypeList().find(md => md.getName() === resultMessageName);
+
+      if (resultMessageDescriptor === undefined) {
+        throw new Error(`Could not find the message "${resultMessageName}", this is required`);
+      }
+
       const args = `${protoPackage}.${argumentsMessageName}`;
       const res = `${protoPackage}.${resultMessageName}`;
 
+      const argsFields = [];
+      for (const fieldDescriptor of argumentsMessageDescriptor.getFieldList()) {
+        const fieldName = fieldDescriptor.getName();
+        if (fieldName) {
+          argsFields.push(fieldName);
+        }
+      }
+
+      const resFields = [];
+      for (const fieldDescriptor of resultMessageDescriptor.getFieldList()) {
+        const fieldName = fieldDescriptor.getName();
+        if (fieldName) {
+          resFields.push(fieldName);
+        }
+      }
+
+      // generate entry points for the CONTRACT.boilerplate.ts file
       classEntryPoints += `
       ${methodName}(args: ${args}): ${res} {
+        // const { ${argsFields.join(', ')} } = args;
+
         // YOUR CODE HERE
-        return new ${res}();
+
+        const res = new ${res}();
+        ${resFields.map(field => `// res.${field} = ;`).join('\n')}
+
+        return res;
       }
       `;
 
+      // generate entry points for the index.ts file
       const entryPoindIndex = `0x${crypto.createHash('sha256').update(methodName).digest('hex')}`.slice(0, 10);
       indexEntryPoints += `
       case ${entryPoindIndex}: {
@@ -90,7 +125,7 @@ try {
       }
       `;
     }
-  });
+  }
 
   // @ts-ignore
   classTemplate = classTemplate.replaceAll('##_ENTRY_POINTS_##', classEntryPoints);
