@@ -89,7 +89,7 @@ export function main(): i32 {
       break;
   }
 
-  System.setContractResultBytes(retbuf);
+  System.setContractResult(retbuf);
 
   System.exitContract(0);
   return 0;
