@@ -1,4 +1,4 @@
-import { System, Protobuf } from 'koinos-cdt-as';
+import { System, Protobuf } from 'koinos-as-sdk';
 import { ##_CONTRACT_NAME_## as ContractClass } from './##_CONTRACT_NAME_##';
 import { ##_PROTO_PACKAGE_## as ProtoNamespace } from "./proto/##_PROTO_PACKAGE_##";
 

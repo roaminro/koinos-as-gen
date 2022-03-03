@@ -62,7 +62,7 @@ export class Calculator {
 
 and will generate the following `index.ts file:
 ```js
-import { System, Protobuf } from "koinos-cdt-as";
+import { System, Protobuf } from "koinos-as-sdk";
 import { Calculator as ContractClass } from "./Calculator";
 import { calculator as ProtoNamespace } from "./proto/calculator";
 
