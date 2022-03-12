@@ -11,6 +11,7 @@ import { capitalize } from './util';
 import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 
 const input = fs.readFileSync(process.stdin.fd);
+const { GENERATE_AUTHORIZE_ENTRY_POINT } = process.env;
 let classTemplate = fs.readFileSync(path.resolve(__dirname, '../templates/contract-class-template.ts'), 'utf8').toString();
 let indexTemplate = fs.readFileSync(path.resolve(__dirname, '../templates/index-template.ts'), 'utf8').toString();
 
@@ -63,9 +64,35 @@ try {
   let classEntryPoints = '';
   let indexEntryPoints = '';
 
+  // if need to generate the autorize entry point
+  if (GENERATE_AUTHORIZE_ENTRY_POINT) {
+    classEntryPoints += `
+      authorize(args: authority.authorize_arguments): authority.authorize_result {
+        // const call = args.call;
+        // const type = args.type;
+
+        // YOUR CODE HERE
+
+        const res = new authority.authorize_result();
+        res.value = true;
+
+        return res;
+      }
+      `;
+
+    indexEntryPoints += `
+      case 0x4a2dbd90: {
+        const args = Protobuf.decode<authority.authorize_arguments>(rdbuf, authority.authorize_arguments.decode);
+        const res = c.authorize(args);
+        retbuf = Protobuf.encode(res, authority.authorize_result.encode);
+        break;
+      }
+      `;
+  }
+
   for (const messageDescriptor of protoFileDescriptor.getMessageTypeList()) {
     const messageName = messageDescriptor.getName();
-  
+
     // only parse the messages ending with '_arguments'
     if (messageName?.endsWith('_arguments')) {
       const argumentsMessageDescriptor = messageDescriptor;

@@ -20,6 +20,9 @@ The plugin will generate a `CONTACT.boilerplate.ts` file and an `index.ts`, for 
 
 ```sh
 protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=. myProtoFile.proto
+
+// you can generate the "authorize" entry point by setting the GENERATE_AUTHORIZE_ENTRY_POINT env variable
+GENERATE_AUTHORIZE_ENTRY_POINT=1 protoc --plugin=protoc-gen-as=./node_modules/.bin/koinos-as-gen --as_out=. myProtoFile.proto
 ```
 
 ## Example
