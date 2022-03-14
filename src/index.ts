@@ -11,7 +11,7 @@ import { capitalize } from './util';
 import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 
 const input = fs.readFileSync(process.stdin.fd);
-const { GENERATE_AUTHORIZE_ENTRY_POINT } = process.env;
+const { GENERATE_AUTHORIZE_ENTRY_POINT, RETURN_BUFFER_SIZE } = process.env;
 let classTemplate = fs.readFileSync(path.resolve(__dirname, '../templates/contract-class-template.ts'), 'utf8').toString();
 let indexTemplate = fs.readFileSync(path.resolve(__dirname, '../templates/index-template.ts'), 'utf8').toString();
 
@@ -158,6 +158,9 @@ try {
   classTemplate = classTemplate.replaceAll('##_ENTRY_POINTS_##', classEntryPoints);
   // @ts-ignore
   indexTemplate = indexTemplate.replaceAll('##_ENTRY_POINTS_##', indexEntryPoints);
+  const returnBufferSize = RETURN_BUFFER_SIZE || "1024";
+  // @ts-ignore
+  indexTemplate = indexTemplate.replaceAll('##_RETURN_BUFFER_SIZE_##', returnBufferSize);
 
   let formattedClassTemplate = classTemplate;
   try {

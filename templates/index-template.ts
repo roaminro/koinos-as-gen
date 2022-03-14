@@ -5,7 +5,7 @@ import { ##_PROTO_PACKAGE_## as ProtoNamespace } from "./proto/##_PROTO_PACKAGE_
 export function main(): i32 {
   const entryPoint = System.getEntryPoint();
   const rdbuf = System.getContractArguments();
-  let retbuf = new Uint8Array(System.MAX_BUFFER_SIZE);
+  let retbuf = new Uint8Array(##_RETURN_BUFFER_SIZE_##);
 
   const c = new ContractClass();
 
