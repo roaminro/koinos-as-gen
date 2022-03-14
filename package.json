@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-gen",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "MIT",
   "main": "lib/index.js",
   "author": "Roamin Roe <roamin@tuta.io>",
