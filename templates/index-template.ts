@@ -1,5 +1,4 @@
-import { System, Protobuf } from 'koinos-as-sdk';
-import * as authority from "../../koinos-proto-as/koinos/chain/authority";
+import { System, Protobuf, authorize_arguments, authorize_result } from "koinos-as-sdk";
 import { ##_CONTRACT_NAME_## as ContractClass } from './##_CONTRACT_NAME_##';
 import * as ProtoNamespace from "./proto/##_PROTO_PACKAGE_##";
 
