@@ -1,6 +1,6 @@
 import { System, Protobuf, authority } from 'koinos-as-sdk';
 import * as authority from "../../koinos-proto-as/koinos/chain/authority";
-import * as ContractClass from './##_CONTRACT_NAME_##';
+import { ##_CONTRACT_NAME_## as ContractClass } from './##_CONTRACT_NAME_##';
 import * as ProtoNamespace from "./proto/##_PROTO_PACKAGE_##";
 
 export function main(): i32 {
