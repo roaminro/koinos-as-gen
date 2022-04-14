@@ -67,13 +67,13 @@ try {
   // if need to generate the autorize entry point
   if (GENERATE_AUTHORIZE_ENTRY_POINT) {
     classEntryPoints += `
-      authorize(args: authority.authorize_arguments): authority.authorize_result {
+      authorize(args: authorize_arguments): authorize_result {
         // const call = args.call;
         // const type = args.type;
 
         // YOUR CODE HERE
 
-        const res = new authority.authorize_result();
+        const res = new authorize_result();
         res.value = true;
 
         return res;
@@ -82,9 +82,9 @@ try {
 
     indexEntryPoints += `
       case 0x4a2dbd90: {
-        const args = Protobuf.decode<authority.authorize_arguments>(rdbuf, authority.authorize_arguments.decode);
+        const args = Protobuf.decode<authorize_arguments>(rdbuf, authorize_arguments.decode);
         const res = c.authorize(args);
-        retbuf = Protobuf.encode(res, authority.authorize_result.encode);
+        retbuf = Protobuf.encode(res, authorize_result.encode);
         break;
       }
       `;
