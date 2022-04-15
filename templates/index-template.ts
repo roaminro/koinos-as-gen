@@ -1,4 +1,4 @@
-import { System, Protobuf, authorize_arguments, authorize_result } from "koinos-as-sdk";
+import { System, Protobuf, authorize_arguments, authorize_result } from "koinos-sdk-as";
 import { ##_CONTRACT_NAME_## as ContractClass } from './##_CONTRACT_NAME_##';
 import * as ProtoNamespace from "./proto/##_PROTO_PACKAGE_##";
 
