@@ -1,4 +1,3 @@
-// 
 import {
   CodeGeneratorRequest,
   CodeGeneratorResponse,
@@ -28,7 +27,7 @@ try {
     CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
   );
 
-  // there can be only 1 ABI file to generate, 
+  // there can be only 1 ABI file to generate,
   // so the first file to generate is always the one used to generate the contract class
   const protoFileName = codeGenRequest.getFileToGenerateList()[0];
   let protoFileDescriptor: FileDescriptorProto | undefined;
@@ -99,7 +98,7 @@ try {
 
     indexEntryPoints += `
       case 0x4a2dbd90: {
-        const args = Protobuf.decode<authority.authorize_arguments>(rdbuf, authority.authorize_arguments.decode);
+        const args = Protobuf.decode<authority.authorize_arguments>(contractArgs.args, authority.authorize_arguments.decode);
         const res = c.authorize(args);
         retbuf = Protobuf.encode(res, authority.authorize_result.encode);
         break;
@@ -176,7 +175,7 @@ try {
       const entryPoindIndex = `0x${crypto.createHash('sha256').update(methodName).digest('hex')}`.slice(0, 10);
       indexEntryPoints += `
       case ${entryPoindIndex}: {
-        const args = Protobuf.decode<ProtoNamespace.${argumentsMessageName}>(rdbuf, ProtoNamespace.${argumentsMessageName}.decode);
+        const args = Protobuf.decode<ProtoNamespace.${argumentsMessageName}>(contractArgs.args, ProtoNamespace.${argumentsMessageName}.decode);
         const res = c.${methodName}(args);
         retbuf = Protobuf.encode(res, ProtoNamespace.${resultMessageName}.encode);
         break;

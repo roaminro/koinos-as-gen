@@ -1,9 +1,9 @@
 {
-  "name": "koinos-as-gen",
-  "version": "0.4.8",
+  "name": "@roamin/koinos-as-gen",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "lib/index.js",
-  "author": "Roamin",
+  "author": "Roamin Ro",
   "repository": "https://github.com/roaminro/koinos-as-gen",
   "tags": [
     "protobuf",
